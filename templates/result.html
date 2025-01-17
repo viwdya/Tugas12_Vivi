@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px;
+            background-color: rgb(88, 160, 238);
+            color: white;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 4px 4px 0 0;
+            margin-right: 5px;
+        }
+
+        .tab.active {
+            background-color: rgb(88, 160, 238);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 0 0 4px 4px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .go-back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .go-back-btn:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #dda0dd;
+            color: white;
+        }
+
+        td {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Queueing Model Results</h1>
+        
+        <!-- Summary Table -->
+        <h2>Summary</h2>
+        <table>
+            <tr>
+                <th>Traffic Intensity (ρ)</th>
+                <td>{{ rho|round(2) }}</td>
+            </tr>
+            <tr>
+                <th>Average Number of Customers (L)</th>
+                <td>
+                    {% if L == 'inf' %}
+                        Not Defined (ρ ≥ 1)
+                    {% else %}
+                        {{ L|round(2) }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Number of Customers in Queue (LQ)</th>
+                <td>
+                    {% if LQ == 'inf' %}
+                        Not Defined (ρ ≥ 1)
+                    {% else %}
+                        {{ LQ|round(2) }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Average Time Spent in System (W)</th>
+                <td>
+                    {% if W == 'inf' %}
+                        Not Defined (ρ ≥ 1)
+                    {% else %}
+                        {{ W|round(2) }} hours
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Time Spent in Queue (WQ)</th>
+                <td>
+                    {% if WQ == 'inf' %}
+                        Not Defined (ρ ≥ 1)
+                    {% else %}
+                        {{ WQ|round(2) }} hours
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+
+        <!-- Tabs Navigation -->
+        <div class="tabs">
+            <div class="tab active" data-tab="step1">ρ</div>
+            <div class="tab" data-tab="step2">L</div>
+            <div class="tab" data-tab="step3">LQ</div>
+            <div class="tab" data-tab="step4">W</div>
+            <div class="tab" data-tab="step5">WQ</div>
+        </div>
+        
+        <!-- Tabs Content -->
+        <div id="step1" class="tab-content active">
+            <h3>Traffic Intensity (ρ)</h3>
+            <p>{{ steps[0].equation }}</p>
+        </div>
+
+        <div id="step2" class="tab-content">
+            <h3>Average Number of Customers in System (L)</h3>
+            <p>{{ steps[3].equation }}</p>
+        </div>
+
+        <div id="step3" class="tab-content">
+            <h3>Number of Customers in Queue (LQ)</h3>
+            <p>{{ steps[2].equation }}</p>
+        </div>
+
+        <div id="step4" class="tab-content">
+            <h3>Average Time in System (W)</h3>
+            <p>{{ steps[4].equation }}</p>
+        </div>
+
+        <div id="step5" class="tab-content">
+            <h3>Average Time in Queue (WQ)</h3>
+            <p>{{ steps[5].equation }}</p>
+        </div>
+
+        <!-- Go Back Button -->
+        <a href="/" class="go-back-btn">Go Back</a>
+    </div>
+
+    <script>
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                const tabContent = document.getElementById(this.getAttribute('data-tab'));
+                tabContent.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
